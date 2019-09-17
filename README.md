@@ -1,6 +1,5 @@
-# jbknowledge/create-react-app
-
-A cli for generating new React projects.
+# Create React App
+A cli for generating new React projects at [JBKnowledge](https://jbknowledge.com/).
 
 ## Running
 
