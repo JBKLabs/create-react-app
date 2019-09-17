@@ -1,15 +1,30 @@
 {
   "name": "@jbknowledge/create-react-app",
-  "repository": {},
   "version": "0.0.1",
-  "bin": "./index.js",
-  "description": "React project generator",
+  "bin": "index.js",
+  "description": "JBKnowledge React project generator",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "jbknowledge",
+    "react",
+    "generator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JBKLabs/create-react-app.git"
   },
-  "author": "JBKLabs",
-  "license": "ISC",
+  "homepage": "https://github.com/JBKLabs/create-react-app",
+  "bugs": {
+    "url": "https://github.com/JBKLabs/create-react-app/issues"
+  },
+  "license": "Apache-2.0",
+  "authors": [
+    "Josh Hooton (https://github.com/shvagen)",
+    "Brian Maule (https://github.com/mauleb)"
+  ],
   "dependencies": {
     "commander": "3.0.1",
     "shelljs": "^0.8.3",
