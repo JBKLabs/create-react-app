@@ -9,7 +9,7 @@ const fs = require('fs');
 const pkg = require('./package.json');
 
 let name;
-const templateRepo = 'https://mitregitlab0.jbknowledge.com/jbklabs/example-react-project.git';
+const templateRepo = 'https://github.com/JBKLabs/create-react-app.git';
 
 const run = (message, cb) => (...args) => new Promise(async (resolve) => {
   console.log(`${message} ...`);
