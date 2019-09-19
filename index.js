@@ -7,9 +7,10 @@ const tmp = require('tmp');
 const command = require('commander');
 const fs = require('fs');
 const pkg = require('./package.json');
+const inquirer = require('inquirer');
 
 let name;
-const templateRepo = 'https://github.com/JBKLabs/create-react-app.git';
+const templateRepo = 'https://github.com/JBKLabs/example-react-project.git';
 
 const run = (message, cb) => (...args) => new Promise(async (resolve) => {
   console.log(`${message} ...`);
@@ -19,7 +20,7 @@ const run = (message, cb) => (...args) => new Promise(async (resolve) => {
   });
 }); 
 
-const createProjectDirectory = run('building project directory', (name, cb) => {
+const createProjectDirectory = (name) => {
   if (name !== '.') {
     try {
       fs.mkdirSync(name);
@@ -31,8 +32,7 @@ const createProjectDirectory = run('building project directory', (name, cb) => {
       }
     }
   }
-  cb();
-});
+};
 
 const cloneExampleProject = run('cloning example project', (cb) => {
   tmp.dir({ unsafeCleanup: true }, (err, tmpPath, cleanupCallback) => {
@@ -49,39 +49,78 @@ const cloneExampleProject = run('cloning example project', (cb) => {
   });
 });
 
-const renderTemplate = run('rendering template', (template, projectPath, cb) => {
+const replaceToken = (tempPath, [key, value]) => {
+  if (key && value) {
+    shell.ls('-RA', `${tempPath}`).forEach((file) => {
+      try {
+        shell.sed('-i',`<% ${key} %>`, value.toString(), path.join(tempPath, file));
+      } catch {}
+    });
+  }
+}
+
+const renderTemplate = run('rendering template', (template, projectPath, options, cb) => {
   shell.rm('-rf', path.join(template.path, './.git'));
-  // replace template strings
+  Object.entries(options).forEach(o => replaceToken(template.path, o));
   shell.cp('-rf', `${template.path}/*`, projectPath);
   shell.cp('-rf', `${template.path}/.*`, projectPath);
   template.clear();
   cb();
 });
 
-const prepareProject = run('preparing project', (projectPath, cb) => {
+const prepareProject = run('preparing project', (projectPath, options, cb) => {
   shell.cd(projectPath);
+
+  if (options.initializeGit && shell.exec('git init').code !== 0) {
+    shell.echo('Error: git init failed');
+    shell.exit(1);
+  }
+
+  console.log('installing dependencies ...')
+
   if (shell.exec('npm i').code !== 0) {
     shell.echo('Error: npm install failed');
     shell.exit(1);
   }
+
   cb();
 });
 
+const promptUser = (projectPath) => new Promise((resolve) => {
+  const gitPrompt = !fs.existsSync(`${projectPath}/.git`)
+    ? [{
+      type: 'confirm',
+      message: 'Would you like to initialize git?',
+      name: 'initializeGit'
+    }] : [];
+
+  inquirer.prompt([
+    { 
+      type: "input",
+      message: "Enter your project name:",
+      name: "projectName"
+    },
+    ...gitPrompt
+  ])
+  .then(resolve);
+})
+
 command
   .version(pkg.version)
-  .arguments('<projectName>')
-  .action(async (projectName) => {
-    name = projectName;
+  .arguments('<directoryName>')
+  .action(async (directoryName) => {
+    name = directoryName;
     const projectPath = name ? `./${name}` : '.';
-    await createProjectDirectory(name);
+    createProjectDirectory(name);
+    const options = await promptUser(projectPath);
     const template = await cloneExampleProject();
-    await renderTemplate(template, projectPath);
-    await prepareProject(projectPath);
+    await renderTemplate(template, projectPath, options);
+    await prepareProject(projectPath, options);
   });
 
 command.parse(process.argv);
 
 if(typeof name === 'undefined') {
-  console.error('Project name is required.');
+  console.error('Directory name is required.');
   process.exit(1);
 }
