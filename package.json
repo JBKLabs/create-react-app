@@ -1,6 +1,6 @@
 {
   "name": "@jbknowledge/create-react-app",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "bin": "index.js",
   "description": "JBKnowledge React project generator",
   "main": "index.js",
