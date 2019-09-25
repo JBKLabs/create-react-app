@@ -10,7 +10,7 @@ const pkg = require('./package.json');
 const inquirer = require('inquirer');
 
 let name;
-const templateRepo = 'https://github.com/JBKLabs/example-react-project.git';
+const templateRepo = 'https://github.com/JBKLabs/example-react-project';
 
 const run = (message, cb) => (...args) => new Promise(async (resolve) => {
   console.log(`${message} ...`);
@@ -40,11 +40,22 @@ const cloneExampleProject = run('cloning example project', (cb) => {
       throw err;
     }
 
+    const branchName = command.branch;
+
     git.clone(templateRepo, tmpPath, () => {
-      cb({
+      const result = {
         path: tmpPath,
         clear: cleanupCallback
-      });
+      }
+
+      if (branchName) {
+        git.cwd(tmpPath).checkout(branchName, () => {
+          console.log(`checking out branch ${branchName} ...`);
+          cb(result);
+        });
+      } else {
+        cb(result);
+      }
     });
   });
 });
@@ -108,6 +119,7 @@ const promptUser = (projectPath) => new Promise((resolve) => {
 command
   .version(pkg.version)
   .arguments('<directoryName>')
+  .option('-b, --branch [branch]', 'example-react-project branch name')
   .action(async (directoryName) => {
     name = directoryName;
     const projectPath = name ? `./${name}` : '.';
