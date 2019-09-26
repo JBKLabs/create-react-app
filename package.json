@@ -1,6 +1,6 @@
 {
   "name": "@jbknowledge/create-react-app",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "bin": "index.js",
   "description": "JBKnowledge React project generator",
   "main": "index.js",
@@ -28,7 +28,7 @@
   "dependencies": {
     "commander": "3.0.1",
     "inquirer": "7.0.0",
-    "shelljs": "^0.8.3",
+    "shelljs": "0.8.3",
     "simple-git": "1.126.0",
     "tmp": "0.1.0"
   }
