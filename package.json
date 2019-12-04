@@ -1,6 +1,6 @@
 {
   "name": "@jbknowledge/create-react-app",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "bin": "index.js",
   "description": "JBKnowledge React project generator",
   "main": "index.js",
@@ -23,7 +23,8 @@
   "license": "Apache-2.0",
   "authors": [
     "Josh Hooton (https://github.com/shvagen)",
-    "Brian Maule (https://github.com/mauleb)"
+    "Brian Maule (https://github.com/mauleb)",
+    "Byron Hager (https://github.com/byhag)"
   ],
   "dependencies": {
     "commander": "3.0.1",
